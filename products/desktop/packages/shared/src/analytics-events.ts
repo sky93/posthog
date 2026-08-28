@@ -647,6 +647,7 @@ export type InboxReportActionType =
   | "reingest"
   | "create_pr"
   | "open_pr"
+  | "open_task"
   | "copy_link"
   | "discuss"
   | "expand_signal"
