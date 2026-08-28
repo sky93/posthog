@@ -15,6 +15,7 @@ const config: SignalScoutConfigApi = {
     description: 'General scout',
     scout_origin: 'canonical',
     owners: [],
+    delete_disabled_reason: null,
     enabled: true,
     status: 'active',
     pause_reason: null,
