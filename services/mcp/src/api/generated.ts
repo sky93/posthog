@@ -18792,7 +18792,10 @@ export namespace Schemas {
       description: string;
       /** URL slug. */
       slug: string;
-      /** Validated Markdown body. */
+      /**
+         * Validated Markdown body.
+         * @maxLength 500000
+         */
       markdown: string;
       /** Ordered frontmatter entries. */
       frontmatter: ContentAutopilotFrontmatterEntry[];
@@ -19031,10 +19034,34 @@ export namespace Schemas {
     }
 
     export interface ContentAutopilotProposalEditRequest {
-      /** Edited Markdown to save for review. */
+      /**
+         * Edited Markdown to save for review.
+         * @maxLength 500000
+         */
       proposed_markdown: string;
       /** Updated canonical delivery package. */
       content_package: ContentAutopilotPackage;
+    }
+
+    export interface ContentAutopilotProposalList {
+      readonly id: string;
+      readonly run_id: string;
+      readonly proposal_type: ProposalTypeEnum;
+      readonly lifecycle_status: LifecycleStatusEnum;
+      readonly title: string;
+      readonly audience: string;
+      readonly search_intent: string;
+      readonly expected_outcome: string;
+      /** Performance evidence for this proposal. */
+      evidence: ContentAutopilotEvidence[];
+      /** Blocking and advisory validation results. */
+      validation_report: ContentAutopilotValidationReport;
+      /** Repository-relative delivery path. */
+      readonly file_path: string;
+      readonly delivery_state: DeliveryStateEnum;
+      readonly pull_request_url: string;
+      readonly created_at: string;
+      readonly updated_at: string;
     }
 
     export interface ContentAutopilotPullRequestRequest {
@@ -19073,6 +19100,18 @@ export namespace Schemas {
       Failed: 'failed',
     } as const;
 
+    /**
+     * * `export_only` - Export only
+     * * `github` - GitHub
+     */
+    export type DeliveryModeEnum = typeof DeliveryModeEnum[keyof typeof DeliveryModeEnum];
+
+
+    export const DeliveryModeEnum = {
+      ExportOnly: 'export_only',
+      Github: 'github',
+    } as const;
+
     export interface ContentAutopilotSnapshot {
       /** When the run inputs were captured. */
       captured_at?: string;
@@ -19085,6 +19124,25 @@ export namespace Schemas {
        * * `standard` - Standard
        * * `lower` - Lower */
       confidence?: ConfidenceEnum;
+      /** Public sources authorized for this run. */
+      source_urls?: string[];
+      /** Site paths authorized for this run. */
+      content_boundaries?: string[];
+      /** Editorial rules captured for this run. */
+      brand_rules?: string[];
+      /** Delivery mode captured for this run.
+       *
+       * * `export_only` - Export only
+       * * `github` - GitHub */
+      delivery_mode?: DeliveryModeEnum;
+      /** GitHub repository captured for this run. */
+      github_repository?: string;
+      /** GitHub base branch captured for this run. */
+      base_branch?: string;
+      /** Repository directories authorized for this run. */
+      content_directories?: string[];
+      /** URL-to-file mapping captured for this run. */
+      url_to_file_convention?: string;
     }
 
     export interface ContentAutopilotRun {
@@ -19145,18 +19203,6 @@ export namespace Schemas {
       /** Non-blocking discovery warnings. */
       warnings: string[];
     }
-
-    /**
-     * * `export_only` - Export only
-     * * `github` - GitHub
-     */
-    export type DeliveryModeEnum = typeof DeliveryModeEnum[keyof typeof DeliveryModeEnum];
-
-
-    export const DeliveryModeEnum = {
-      ExportOnly: 'export_only',
-      Github: 'github',
-    } as const;
 
     export interface ContentAutopilotSiteProfile {
       readonly id: string;
@@ -53875,13 +53921,13 @@ export namespace Schemas {
       results: ContentAutopilotMeasurement[];
     }
 
-    export interface PaginatedContentAutopilotProposalList {
+    export interface PaginatedContentAutopilotProposalListList {
       count: number;
       /** @nullable */
       next?: string | null;
       /** @nullable */
       previous?: string | null;
-      results: ContentAutopilotProposal[];
+      results: ContentAutopilotProposalList[];
     }
 
     export interface PaginatedContentAutopilotRunList {
