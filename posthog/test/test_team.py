@@ -108,7 +108,7 @@ class TestTeam(BaseTest):
                                     "key": "email",
                                     "type": "person",
                                     "value": "@posthog.com",
-                                    "operator": "icontains",
+                                    "operator": "ends_with",
                                 }
                             ],
                         },

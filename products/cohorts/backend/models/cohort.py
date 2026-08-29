@@ -1347,7 +1347,10 @@ def get_or_create_internal_test_users_cohort(
         }
     ]
 
-    # Add email domain filter if the creating user has a non-generic domain
+    # Add email domain filter if the creating user has a non-generic domain.
+    # `ends_with` on "@domain" rather than `icontains`: a substring match on "@acme.com" also matches
+    # acme.com.br and acme.community, silently dropping real users from every insight. Anchoring costs
+    # subdomain matches (eu.acme.com), which a team can widen itself.
     if initiating_user_email:
         generic_emails = GenericEmails()
         if not generic_emails.is_generic(initiating_user_email):
@@ -1362,7 +1365,7 @@ def get_or_create_internal_test_users_cohort(
                                 "key": "email",
                                 "type": "person",
                                 "value": f"@{domain}",
-                                "operator": "icontains",
+                                "operator": "ends_with",
                             }
                         ],
                     }
